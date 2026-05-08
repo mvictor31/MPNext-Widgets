@@ -18,7 +18,12 @@ export async function getClientCredentialsToken() {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to get client credentials token: ${response.statusText}`);
+    // OAuth 2.0 errors are returned in the response body (e.g. {"error":"invalid_client"})
+    // — surface them so misconfigured clients/scopes/secrets are diagnosable.
+    const body = await response.text().catch(() => "");
+    throw new Error(
+      `Failed to get client credentials token: ${response.status} ${response.statusText}${body ? ` — ${body}` : ""}`,
+    );
   }
 
   return await response.json();
