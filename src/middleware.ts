@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { getSessionCookie } from 'better-auth/cookies';
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Early returns for public paths (widgets, API, signin, demo)
@@ -11,7 +11,6 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith('/demo') ||
     pathname.startsWith('/embed-sdk')
   ) {
-    console.log(`Proxy: Allowing public path ${pathname}`);
     return NextResponse.next();
   }
 
@@ -22,7 +21,7 @@ export async function proxy(request: NextRequest) {
     }
     return NextResponse.next();
   } catch (error) {
-    console.error('Proxy: Error checking session:', error);
+    console.error('Middleware: error checking session:', error);
     return NextResponse.redirect(new URL('/signin', request.url));
   }
 }
