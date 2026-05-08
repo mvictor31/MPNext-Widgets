@@ -4,12 +4,15 @@ import { getSessionCookie } from 'better-auth/cookies';
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Early returns for public paths
-  if (pathname.startsWith('/api') || pathname === '/signin' || pathname.startsWith('/demo') || pathname.startsWith('/embed-sdk')) {
-  console.log(`Proxy: Allowing public path ${pathname}`);
-  return NextResponse.next();
-}
-
+  // Early returns for public paths (widgets, API, signin, demo)
+  if (
+    pathname.startsWith('/api') ||
+    pathname === '/signin' ||
+    pathname.startsWith('/demo') ||
+    pathname.startsWith('/embed-sdk')
+  ) {
+    console.log(`Proxy: Allowing public path ${pathname}`);
+    return NextResponse.next();
   }
 
   try {
@@ -26,7 +29,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-  '/((?!_next/static|_next/image|favicon.ico|assets/|embed-sdk/).*)',
-],
+    '/((?!_next/static|_next/image|favicon.ico|assets/|embed-sdk/).*)',
   ],
 };
